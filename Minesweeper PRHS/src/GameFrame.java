@@ -32,7 +32,7 @@ public class GameFrame extends JFrame{
 	}
 
 	public static void main(String[] args) {
-		System.out.println("");
+		System.out.println("Test");
 		initialize();
 	}
 	private static void initialize() {
