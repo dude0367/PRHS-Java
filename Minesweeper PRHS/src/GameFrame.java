@@ -15,7 +15,7 @@ import javax.swing.border.BevelBorder;
 
 public class GameFrame extends JFrame{
 	public GameFrame() {
-		initialize();
+		//initialize();
 	}
 
 	public static GameFrame mineFrame;

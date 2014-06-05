@@ -7,52 +7,52 @@ import java.awt.GridLayout;
 
 public class Grid extends JPanel{
 
- Tile[][] tiles;
- GameFrame mineFrame;
- int numBombs;
- int unclickedTiles;
- private boolean beenClicked;
+	Tile[][] tiles;
+	GameFrame mineFrame;
+	int numBombs;
+	int unclickedTiles;
+	private boolean beenClicked;
 
-/* Made by Nathan Knight
- * Instantiates the tile array (Tile tiles[][])
- * Populates array
- * Adds actionlisteners to buttons
- * Sets bounds itself (jpanel)
- * Sets up the gridlayout of itself
- */
+	/* Made by Nathan
+	 * Instantiates the tile array (Tile tiles[][])
+	 * Populates array
+	 * Adds actionlisteners to buttons
+	 * Sets bounds itself (jpanel)
+	 * Sets up the gridlayout of itself
+	 */
 
- public Grid(GameFrame frame) {
-   tiles = new Tile[9][9];
-   unclickedTiles = 9*9;
-   GridLayout g = new GridLayout(9,9);
-   this.setLayout(g);
-   int size = 18;
-   this.setPreferredSize(new Dimension(9 * size, 9 * size));
-   for(int x = 0; x < 9; x++) {
-    for(int y = 0; y < 9; y++) {
-      tiles[x][y] = new Tile(x, y, this);
-    }
-   }
-   numBombs = 10;
-   this.mineFrame = frame;
- }
+	public Grid(GameFrame frame) {
+		tiles = new Tile[9][9];
+		unclickedTiles = 9*9;
+		GridLayout g = new GridLayout(9,9);
+		this.setLayout(g);
+		int size = 18;
+		this.setPreferredSize(new Dimension(9 * size, 9 * size));
+		for(int x = 0; x < 9; x++) {
+			for(int y = 0; y < 9; y++) {
+				tiles[x][y] = new Tile(x, y, this);
+			}
+		}
+		numBombs = 10;
+		this.mineFrame = frame;
+	}
 
- 	public void showLoss(int clickedRow, int clickedColumn){
-	 		for(int row = 0; row < 9; row++){
-	 			for(int column = 0; column < 9; column ++){
-	 				int underValue = tiles[row][column].getUnderValue();
-	 				int overValue = tiles[row][column].getOverValue();
-	 				if(underValue == -1 && overValue != 1){
-	 					tiles[row][column].setOver(-4);
-	 				}
-	 				else if(underValue != -1 && overValue == 1){
-	 					tiles[row][column].setOver(-2);
-	 				}
-					tiles[row][column].removeMouseListener(tiles[row][column]);
-	 			}
-	 		}
-	 		tiles[clickedRow][clickedColumn].setOver(-3);
-	 		GameFrame.timer.stop();
+	public void showLoss(int clickedRow, int clickedColumn){
+		for(int row = 0; row < 9; row++){
+			for(int column = 0; column < 9; column ++){
+				int underValue = tiles[row][column].getUnderValue();
+				int overValue = tiles[row][column].getOverValue();
+				if(underValue == -1 && overValue != 1){
+					tiles[row][column].setOver(-4);
+				}
+				else if(underValue != -1 && overValue == 1){
+					tiles[row][column].setOver(-2);
+				}
+				tiles[row][column].removeMouseListener(tiles[row][column]);
+			}
+		}
+		tiles[clickedRow][clickedColumn].setOver(-3);
+		GameFrame.timer.stop();
 	}
 	public void showWin(){
 		for(int x=0;x<=9;x++){
@@ -68,28 +68,28 @@ public class Grid extends JPanel{
 	}
 
 
- public Grid(GameFrame frame, int width, int height, int bombs) {
-  tiles = new Tile[width][height];
-  unclickedTiles = width * height;
-  GridLayout g = new GridLayout(width,height);
-  this.setLayout(g);
-  for(int x = 0; x < width; x++) {
-   for(int y = 0; y < height; y++) {
-     tiles[x][y] = new Tile(x, y, this);
-   }
-  }
-  numBombs = bombs;
-  this.mineFrame = frame;
- }
+	public Grid(GameFrame frame, int width, int height, int bombs) {
+		tiles = new Tile[width][height];
+		unclickedTiles = width * height;
+		GridLayout g = new GridLayout(width,height);
+		this.setLayout(g);
+		for(int x = 0; x < width; x++) {
+			for(int y = 0; y < height; y++) {
+				tiles[x][y] = new Tile(x, y, this);
+			}
+		}
+		numBombs = bombs;
+		this.mineFrame = frame;
+	}
 
- public boolean calcWin(){
-  if (numBombs == unclickedTiles)
-	  return true;
-  else
-	return false;
- }
- 	public void makeBombs(int firstR, int firstC){
-java.util.Random rand=new java.util.Random();
+	public boolean calcWin(){
+		if (numBombs == unclickedTiles)
+			return true;
+		else
+			return false;
+	}
+	public void makeBombs(int firstR, int firstC){
+		java.util.Random rand=new java.util.Random();
 		int x=0;
 		while(x<10){
 			int randR=rand.nextInt(9);
@@ -102,9 +102,9 @@ java.util.Random rand=new java.util.Random();
 	}
 	/* 
 	Stephen: this shouldn't be static, right? (incrementBombsTouching)
-	*/
+	 */
 	public void incrementBombsTouching(int posRow, int posColumn){
-	
+
 		for(int newRow = posRow -1; newRow < tiles.length && newRow < posRow+2; newRow++){
 			if (newRow < 0){
 				newRow = 0;
@@ -115,10 +115,10 @@ java.util.Random rand=new java.util.Random();
 				}
 				if(newColumn != posColumn || newRow != posRow){//doesnt increment input tile
 					tiles[newRow][newColumn].setNumber(tiles[newRow][newColumn].getUnderValue() +1);
-					
+
 				}
 			}
-		
+
 		}	
 
 	}
