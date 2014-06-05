@@ -44,11 +44,17 @@ public class Tile extends JButton implements MouseListener {
 
 	private Grid mineGrid;
 
-	public Tile(int row,int column, Grid mineGrid){
-		this.row=row;
+	public Tile(int row,int column, Grid grid){
+		/*this.row=row;
 		this.column=column;
 		//help was used to code mouse listener http://stackoverflow.com/questions/3616761/addmouselistener-or-addactionlistener-or-jbutton
+		this.addMouseListener(this);*/
+		grid.add(this);
+		mineGrid = grid;
+		this.row = row;
+		this.column= column;
 		this.addMouseListener(this);
+		this.setIcon(imgUnclicked);
 	}
 
 	public void setNumber(int newUnderValue){
