@@ -1,131 +1,130 @@
+
+
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
 
 public class Grid extends JPanel{
-
+	private static final long serialVersionUID = 1L;
 	Tile[][] tiles;
 	GameFrame mineFrame;
 	int numBombs;
 	int unclickedTiles;
 	private boolean beenClicked;
 
-	/* Made by Nathan
+	/** Made by Nathan Knight
 	 * Instantiates the tile array (Tile tiles[][])
 	 * Populates array
 	 * Adds actionlisteners to buttons
 	 * Sets bounds itself (jpanel)
 	 * Sets up the gridlayout of itself
-	 */
-
+	 * */
 	public Grid(GameFrame frame) {
 		tiles = new Tile[9][9];
 		unclickedTiles = 9*9;
 		GridLayout g = new GridLayout(9,9);
-		this.setLayout(g);
-		int size = 18;
-		this.setPreferredSize(new Dimension(9 * size, 9 * size));
+		setLayout(g);
+		final int SIZE = 18;
+		setPreferredSize(new Dimension(9 * SIZE, 9 * SIZE));
 		for(int x = 0; x < 9; x++) {
 			for(int y = 0; y < 9; y++) {
 				tiles[x][y] = new Tile(x, y, this);
 			}
 		}
 		numBombs = 10;
-		this.mineFrame = frame;
+		mineFrame = frame;
 	}
 
-	public void showLoss(int clickedRow, int clickedColumn){
-		for(int row = 0; row < 9; row++){
-			for(int column = 0; column < 9; column ++){
-				int underValue = tiles[row][column].getUnderValue();
-				int overValue = tiles[row][column].getOverValue();
-				if(underValue == -1 && overValue != 1){
-					tiles[row][column].setOver(-4);
-				}
-				else if(underValue != -1 && overValue == 1){
-					tiles[row][column].setOver(-2);
-				}
-				tiles[row][column].removeMouseListener(tiles[row][column]);
-			}
-		}
-		tiles[clickedRow][clickedColumn].setOver(-3);
-		GameFrame.timer.stop();
-	}
-	public void showWin(){
-		for(int x=0;x<=9;x++){
-			for(int y=0;y<=9;y++){
-				if(tiles[x][y].getOverValue()!=-1){
-					tiles[x][y].setOver(Tile.FLAG);
-				}
-				this.mineFrame.timer.stop();
-				this.mineFrame.lblBombs.setText("000");
-				tiles[x][y].removeMouseListener(tiles[x][y]);
-			}
-		}
-	}
-
-
+	/** Made by Nathan Knight
+	 * Instantiates the tile array (Tile tiles[][])
+	 * Populates array
+	 * Adds actionlisteners to buttons
+	 * Sets bounds itself (jpanel)
+	 * Sets up the gridlayout of itself
+	 * */
 	public Grid(GameFrame frame, int width, int height, int bombs) {
 		tiles = new Tile[width][height];
 		unclickedTiles = width * height;
 		GridLayout g = new GridLayout(width,height);
-		this.setLayout(g);
+		setLayout(g);
+		final int SIZE = 17;
+		setPreferredSize(new Dimension(height * SIZE, width * SIZE));
 		for(int x = 0; x < width; x++) {
 			for(int y = 0; y < height; y++) {
 				tiles[x][y] = new Tile(x, y, this);
 			}
 		}
 		numBombs = bombs;
-		this.mineFrame = frame;
+		mineFrame = frame;
+	}
+	
+	public boolean calcWin(){
+		return numBombs == unclickedTiles;
+	}
+	/**
+	 * By Leejay
+	 * @param firstRow
+	 * @param firstColumn
+	 */
+	public void makeBombs(int firstRow, int firstColumn){
+		int numBomb=0;
+		int totalBombs=10;
+		int counter=0;
+		Integer randRow[]=new Integer[totalBombs];
+		Integer randColumn[]=new Integer[totalBombs];
+		java.util.Random rand=new java.util.Random();
+		do{
+			randRow[numBomb]=rand.nextInt(9);
+			randColumn[numBomb]=rand.nextInt(9);
+			while(counter<numBomb){
+				if(((randRow[numBomb]==randRow[counter]) && (randColumn[numBomb]==randColumn[counter])) && (numBomb!=counter)){
+					System.out.println("Hey, there was a bomb over a bomb. "+randRow[numBomb]+" "+randColumn[numBomb]);
+					randRow[numBomb]=rand.nextInt(9);
+					randColumn[numBomb]=rand.nextInt(9);
+					System.out.println("I moved it to "+ randRow[numBomb]+" "+randColumn[numBomb]);
+					counter=0;
+				}else{
+					counter++;
+				}
+			}
+			counter=0;
+			if(!(randRow[numBomb]==firstRow && randColumn[numBomb]==firstColumn)){
+				tiles[randRow[numBomb]][randColumn[numBomb]].setBomb();
+				incrementBombsTouching(randRow[numBomb], randColumn[numBomb]);
+				numBomb++;
+			}
+		}while(numBomb<totalBombs);
 	}
 
-	public boolean calcWin(){
-		if (numBombs == unclickedTiles)
-			return true;
-		else
-			return false;
-	}
-	public void makeBombs(int firstR, int firstC){
-		java.util.Random rand=new java.util.Random();
-		int x=0;
-		while(x<10){
-			int randR=rand.nextInt(9);
-			int randC=rand.nextInt(9);
-			if(!(randR==firstR && randC==firstC) && !(tiles[randR][randC].isBomb())){
-				tiles[randR][randC].setBomb();
-				x++;
+	/**
+	 * By Stephen Buttolph
+	 * @param row
+	 * @param column
+	 */
+	public void incrementBombsTouching(int row, int column){
+		Tile[] neighbors = getNeighbors(row, column);
+		for (Tile tile : neighbors){
+			if (!tile.isBomb()){
+				tile.setNumber(tile.getUnderValue() + 1);
 			}
 		}
+		getTile(row, column).setBomb();
 	}
-	/* 
-	Stephen: this shouldn't be static, right? (incrementBombsTouching)
+	/**
+	 * By Stephen Buttolph
+	 * @param row
+	 * @param column
+	 * @return
 	 */
-	public void incrementBombsTouching(int posRow, int posColumn){
-
-		for(int newRow = posRow -1; newRow < tiles.length && newRow < posRow+2; newRow++){
-			if (newRow < 0){
-				newRow = 0;
-			}
-			for(int newColumn = posColumn -1; newColumn < tiles[5].length && newColumn < posColumn+2; newColumn++){
-				if (newColumn < 0){
-					newColumn = 0;
-				}
-				if(newColumn != posColumn || newRow != posRow){//doesnt increment input tile
-					tiles[newRow][newColumn].setNumber(tiles[newRow][newColumn].getUnderValue() +1);
-
-				}
-			}
-
-		}	
-
-	}
-
 	private Tile getTile(int row, int column){
 		return tiles[row][column];
 	}
+	/**
+	 * By Stephen Buttolph
+	 * @param inputTile
+	 * @return
+	 */
 	private boolean tileIsBlank(Tile inputTile){
 		return inputTile.getUnderValue() == 0;
 	}
@@ -152,12 +151,25 @@ public class Grid extends JPanel{
 	private boolean isFlagged(Tile inputTile){
 		return inputTile.getOverValue() == Tile.FLAG;
 	}
+	/**
+	 * By Stephen Buttolph
+	 * @param row
+	 * @param column
+	 */
 	private void firstClick(int row, int column){
+		
 		if (!beenClicked){
+			GameFrame.timer.start();
 			beenClicked = true;
 			makeBombs(row, column);
 		}
 	}
+	/**
+	 * By Stephen Buttolph
+	 * @param row
+	 * @param column
+	 * @return
+	 */
 	private int calcNumNeighbors(int row, int column){
 		int startNum = 8;
 		if (row == 0 || row == tiles.length - 1){
@@ -172,6 +184,36 @@ public class Grid extends JPanel{
 		}
 		return startNum;
 	}
+	public void showLoss(int clickedRow, int clickedColumn){
+ 		for(int row = 0; row < 9; row++){
+ 			for(int column = 0; column < 9; column ++){
+ 				int underValue = tiles[row][column].getUnderValue();
+ 				int overValue = tiles[row][column].getOverValue();
+ 				if(underValue == -1 && overValue != 1){
+ 					tiles[row][column].setOver(-4);
+ 				}
+ 				else if(underValue != -1 && overValue == 1){
+ 					tiles[row][column].setOver(-2);
+ 				}
+				tiles[row][column].removeMouseListener(tiles[row][column]);
+ 			}
+ 		}
+ 		tiles[clickedRow][clickedColumn].setOver(-3);
+ 		GameFrame.timer.stop();
+}
+
+public void showWin(){
+	for(int x=0;x<=8;x++){
+		for(int y=0;y<=8;y++){
+			if(tiles[x][y].getOverValue()!=-1){
+				tiles[x][y].setOver(Tile.FLAG);
+			}
+			GameFrame.timer.stop();
+			tiles[x][y].removeMouseListener(tiles[x][y]);
+		}
+	}
+	JOptionPane.showMessageDialog(GameFrame.mineFrame,"Congratulations! You have completed Minesweeper in " + GameFrame.seconds + " seconds!");
+}
 	private Tile[] getNeighbors(int clickedRow, int clickedColumn){
 		int places = calcNumNeighbors(clickedRow, clickedColumn);
 		int index = 0;
@@ -207,7 +249,7 @@ public class Grid extends JPanel{
 					expansion(adjacentTile.getRow(), adjacentTile.getColumn()); //recursive call to "expansion"
 				}
 			}
-		}
+		}		
 		if (calcWin()){
 			showWin();
 		}
