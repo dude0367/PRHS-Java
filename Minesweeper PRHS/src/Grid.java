@@ -63,7 +63,7 @@ public class Grid extends JPanel{
 		return numBombs == unclickedTiles;
 	}
 	/**
-	 * By Leejay
+	 * By Leejaay
 	 * @param firstRow
 	 * @param firstColumn
 	 */

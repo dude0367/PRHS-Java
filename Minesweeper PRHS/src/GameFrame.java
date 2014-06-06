@@ -64,7 +64,7 @@ public class GameFrame extends JFrame implements ActionListener{
 		});
 	}
 	/**
-	 * Updated version. Just for you Isaac.
+	 * Updated version. Just for you Isaaac.
 	 * Revision: 2
 	 */
 	private static final long serialVersionUID = 1L;
