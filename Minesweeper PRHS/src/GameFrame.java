@@ -45,7 +45,7 @@ public class GameFrame extends JFrame implements ActionListener{
 		panel.add(panel_3);
 		panel_3.setLayout(null);
 		
-		lbTimes = new JLabel("0");
+		lbTimes = new JLabel("000");
 		lbTimes.setHorizontalAlignment(SwingConstants.RIGHT);
 		lbTimes.setBounds(4, 0, 55, 29);
 		panel_3.add(lbTimes);
